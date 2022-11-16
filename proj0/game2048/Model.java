@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Lantao Zhang
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -137,6 +137,13 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      */
     public static boolean emptySpaceExists(Board b) {
+for (int c = 0; c < b.size(); c += 1) {
+    for (int r = 0; r < b.size(); r += 1) {
+        if (b.tile(c,r) == null) {
+            return true;
+        }
+    }
+}
         // TODO: Fill in this function.
         return false;
     }
@@ -147,6 +154,15 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
+for (int c = 0; c < b.size(); c += 1){
+    for (int r = 0; r <b.size(); r +=1) {
+        if (b.tile(c,r) != null) {
+            if (b.tile(c, r).value() == MAX_PIECE) {
+                return true;
+            }
+        }
+    }
+}
         // TODO: Fill in this function.
         return false;
     }
@@ -158,6 +174,16 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
+        if (emptySpaceExists(b)) return true;
+        else {
+            for (int c = 0; c < b.size(); c += 1){
+                for (int r = 0; r < b.size(); r += 1){
+                    if (b.tile(c,r).value() == b.tile(c+1,r).value() || b.tile(c,r).value() == b.tile(c,r+1).value()){
+                        return true;
+                    }
+                }
+            }
+        }
         // TODO: Fill in this function.
         return false;
     }
