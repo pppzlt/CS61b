@@ -161,78 +161,89 @@ public class Model extends Observable {
 
     }
 
+    boolean m_3 = false; // true if row 3 created by merge
+    boolean m_2 = false;
+    boolean m_1 = false;
+
     public void move_col(int c) {
+        m_3 = false; // true if row 3 created by merge
+        m_2 = false;
+        m_1 = false;
         for (int r = 2; r >= 0; r -= 1) {
             Tile t = tile(c, r);
-//            boolean change = false;
             if (t != null) {
+                if (r == 2) {
+                    move_r_3(c, t);
+                } else if (r == 1) {
+                    move_r_2(c, t);
+                } else if (r == 0) {
+                    move_r_1(c, t);
+                }
+            }
+        }
+    }
 
-                move_r_2(c, t);
-//                if (tile(c, 3) != null) {
-//                    if (t.value() != tile(c, 3).value()) {
-//                        _board.move(c, 2, t);
-//                    } else {
-//                        _board.move(c, 3, t);
-//                    }
-//                } else {
-//                    _board.move(c, 3, t);
-//                }
-//                if (_board.move(c, 3, t)) {
-//                    _score += 2 * t.value();
-//                }
+
+    /**
+     * Checks tile row 3 and make a move
+     *
+     * @param c the column
+     * @param x this tile
+     */
+    public void move_r_3(int c, Tile x) {
+        if ((tile(c, 3) != null && tile(c, 3).value() != x.value()) ||
+                m_3) { //test if row three is a merged data
+            m_2 = _board.move(c, 2, x);
+        } else {
+            m_3 = _board.move(c, 3, x);
+            if (m_3) {
+                _score += x.value() * 2;
             }
         }
     }
 
     /**
-     * Checks tile row 2 and make a move
+     * check tile row 2 and make a move
      *
-     * @param c the column
+     * @param c column number
      * @param x this tile
      */
     public void move_r_2(int c, Tile x) {
-        if (tile(c, 3) != null && tile(c, 3).value() != x.value()) {
-            _board.move(c, 2, x);
+        if ((tile(c, 2) != null && tile(c, 2).value() != x.value()) ||
+                m_2) { //test if row two is a merged data
+            _board.move(c, 1, x);
         } else {
-            _board.move(c, 3, x);
+            if (tile(c, 2) != null) {
+                m_2 = _board.move(c, 2, x);
+                _score += x.value() * 2;
+            } else {
+                move_r_3(c, x);
+            }
         }
     }
 
     /**
-     * check tile row 1 and make a move
+     * check tile row 1 and make a move;
      *
      * @param c column number
      * @param x this tile
      */
     public void move_r_1(int c, Tile x) {
-        if (tile(c, 2) != null && tile(c, 2).value() != x.value()) {
-            _board.move(c, 1, x);
+        if (tile(c, 1) != null && tile(c, 1).value() != x.value()) {
+            _board.move(c, 0, x);
         } else {
-            if (tile(c, 2) != null) {
-                _board.move(c, 2, x);
+            if (tile(c, 1) != null) {
+                m_1 = _board.move(c, 1, x);
+                _score += x.value() * 2;
             } else {
                 move_r_2(c, x);
             }
         }
     }
 
-    /**
-     * check tile row 0 and make a move;
-     *
-     * @param c column number
-     * @param x this tile
-     */
-    public void move_r_0(int c, Tile x) {
-        if (tile(c, 1) != null && tile(c, 1).value() != x.value()) {
-            _board.move(c, 0, x);
-        } else {
-            if (tile(c, 1) != null) {
-                _board.move(c, 1, x);
-            } else {
-                move_r_1(c, x);
-            }
-        }
-    }
+//    public void move_r(int c, int r, Tile x) {
+//        if (r == 0) move_r_1(c, x);
+//    }
 
     /**
      * Checks if the game is over and sets the gameOver variable
