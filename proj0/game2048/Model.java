@@ -151,8 +151,87 @@ public class Model extends Observable {
      */
     public void tilt(Side side) {
         // TODO: Fill in this function.
+        _board.setViewingPerspective(side);
+        for (int c = 0; c < _board.size(); c += 1) {
+            move_col(c);
+        }
 
+        _board.setViewingPerspective(Side.NORTH);
         checkGameOver();
+
+    }
+
+    public void move_col(int c) {
+        for (int r = 2; r >= 0; r -= 1) {
+            Tile t = tile(c, r);
+//            boolean change = false;
+            if (t != null) {
+
+                move_r_2(c, t);
+//                if (tile(c, 3) != null) {
+//                    if (t.value() != tile(c, 3).value()) {
+//                        _board.move(c, 2, t);
+//                    } else {
+//                        _board.move(c, 3, t);
+//                    }
+//                } else {
+//                    _board.move(c, 3, t);
+//                }
+//                if (_board.move(c, 3, t)) {
+//                    _score += 2 * t.value();
+//                }
+            }
+        }
+    }
+
+    /**
+     * Checks tile row 2 and make a move
+     *
+     * @param c the column
+     * @param x this tile
+     */
+    public void move_r_2(int c, Tile x) {
+        if (tile(c, 3) != null && tile(c, 3).value() != x.value()) {
+            _board.move(c, 2, x);
+        } else {
+            _board.move(c, 3, x);
+        }
+    }
+
+    /**
+     * check tile row 1 and make a move
+     *
+     * @param c column number
+     * @param x this tile
+     */
+    public void move_r_1(int c, Tile x) {
+        if (tile(c, 2) != null && tile(c, 2).value() != x.value()) {
+            _board.move(c, 1, x);
+        } else {
+            if (tile(c, 2) != null) {
+                _board.move(c, 2, x);
+            } else {
+                move_r_2(c, x);
+            }
+        }
+    }
+
+    /**
+     * check tile row 0 and make a move;
+     *
+     * @param c column number
+     * @param x this tile
+     */
+    public void move_r_0(int c, Tile x) {
+        if (tile(c, 1) != null && tile(c, 1).value() != x.value()) {
+            _board.move(c, 0, x);
+        } else {
+            if (tile(c, 1) != null) {
+                _board.move(c, 1, x);
+            } else {
+                move_r_1(c, x);
+            }
+        }
     }
 
     /**
@@ -237,10 +316,10 @@ public class Model extends Observable {
                     }
                 }
             }
-        return false;
+            return false;
+        }
+        // TODO: Fill in this function.
     }
-    // TODO: Fill in this function.
-}
 
     /**
      * Returns the model as a string, used for debugging.
